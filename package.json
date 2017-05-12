@@ -1,0 +1,14 @@
+{
+    "name": "dresscode-bricks",
+    "version": "0.0.1",
+    "author": {
+        "name": "Kolyaj",
+        "email": "kolyaj@yandex.ru",
+        "url": "https://github.com/Kolyaj"
+    },
+    "homepage": "https://github.com/Kolyaj/Bricks",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/Kolyaj/Bricks.git"
+    }
+}

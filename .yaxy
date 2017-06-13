@@ -1,4 +1,4 @@
 [Bricks]
-/^http://bricks.tests/tests/(.*)/ => bin: dresscodejs ~/test/tests/$1
+/^http://bricks.tests/(tests|external)/(.*)/ => bin: dresscodejs ~/test/$1/$2
     $SetResponseHeader Content-Type: application/javascript; charset=UTF-8
 bricks.tests/ => file://~/test/

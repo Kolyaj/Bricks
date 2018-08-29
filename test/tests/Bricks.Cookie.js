@@ -6,20 +6,20 @@
     describe('Bricks.Cookie', function() {
         it('Create session cookie', function() {
             Bricks.Cookie.createCookie('foo', 'bar');
-            chai.assert.equal(Bricks.Cookie.readCookie('foo'), 'bar');
+            assert.equal(Bricks.Cookie.readCookie('foo'), 'bar');
         });
 
         it('Erase cookie', function() {
             Bricks.Cookie.createCookie('foo', 'bar');
             Bricks.Cookie.eraseCookie('foo');
-            chai.assert.equal(Bricks.Cookie.readCookie('foo'), null);
+            assert.equal(Bricks.Cookie.readCookie('foo'), null);
         });
 
         it('Create ttl cookie', function(callback) {
             Bricks.Cookie.createCookie('foo', 'bar', 1 / 86400); // Ставим куку на одну секунду
-            chai.assert.equal(Bricks.Cookie.readCookie('foo'), 'bar');
+            assert.equal(Bricks.Cookie.readCookie('foo'), 'bar');
             setTimeout(function() {
-                chai.assert.equal(Bricks.Cookie.readCookie('foo'), null);
+                assert.equal(Bricks.Cookie.readCookie('foo'), null);
                 callback();
             }, 1000)
         });

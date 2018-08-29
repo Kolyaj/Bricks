@@ -7,8 +7,8 @@
             Bricks.Array.shuffle(array);
             var key2 = array.join(',');
             array.sort();
-            chai.assert.notEqual(key1, key2);
-            chai.assert.deepEqual(array, [1, 2, 3, 4, 5]);
+            assert.notEqual(key1, key2);
+            assert.deepEqual(array, [1, 2, 3, 4, 5]);
         });
     });
 })();

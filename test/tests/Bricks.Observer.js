@@ -8,7 +8,7 @@
                 hasEvent = true;
             });
             o._fireEvent('event');
-            chai.assert.isOk(hasEvent);
+            assert.ok(hasEvent);
         });
 
         it('Passing event object', function() {
@@ -20,8 +20,8 @@
                 type = evt.type;
             });
             o._fireEvent('event');
-            chai.assert.equal(target, o);
-            chai.assert.equal(type, 'event');
+            assert.equal(target, o);
+            assert.equal(type, 'event');
         });
 
         it('Passing data', function() {
@@ -31,7 +31,7 @@
                 foo = evt.foo;
             });
             o._fireEvent('event', {foo: 5});
-            chai.assert.equal(foo, 5);
+            assert.equal(foo, 5);
         });
 
         it('Removing listener', function() {
@@ -42,10 +42,10 @@
             };
             o.addEventListener('event', listener);
             o._fireEvent('event');
-            chai.assert.equal(foo, 1);
+            assert.equal(foo, 1);
             o.removeEventListener('event', listener);
             o._fireEvent('event');
-            chai.assert.equal(foo, 1);
+            assert.equal(foo, 1);
         });
     });
 })();

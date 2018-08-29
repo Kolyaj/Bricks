@@ -5,7 +5,7 @@
             var c = new Bricks.Component({
                 foo: 5
             });
-            chai.assert.equal(c.foo, 5);
+            assert.equal(c.foo, 5);
         });
 
         it('Prototype properties', function() {
@@ -14,8 +14,8 @@
                 b: 6
             });
             var c = new C({a: 7});
-            chai.assert.equal(c.a, 7);
-            chai.assert.equal(c.b, 6);
+            assert.equal(c.a, 7);
+            assert.equal(c.b, 6);
         });
 
         it('Method listeners', function() {
@@ -42,10 +42,10 @@
             });
             var c2 = new C2();
             c1._fireEvent('event1');
-            chai.assert.equal(foo, 5);
+            assert.equal(foo, 5);
             c2.destroy();
             c1._fireEvent('event2');
-            chai.assert.equal(foo, 5);
+            assert.equal(foo, 5);
         });
     });
 })();

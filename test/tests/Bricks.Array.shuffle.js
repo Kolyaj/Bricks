@@ -1,5 +1,5 @@
 (function() {
-    //#require Bricks.Array.shuffle
+    //#imports
     describe('Bricks.Array.shuffle', function() {
         it('shuffle array', function() {
             var array = [1, 2, 3, 4, 5];

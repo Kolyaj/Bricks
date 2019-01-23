@@ -1,5 +1,5 @@
 (function() {
-    //#require Bricks.DOM.removeClassName
+    //#imports
     describe('Bricks.DOM.removeClassName', function() {
         it('remove class from div element', function() {
             var container = document.createElement('div');

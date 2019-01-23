@@ -1,5 +1,5 @@
 (function() {
-    //#require Bricks.Observer
+    //#imports
     describe('Bricks.Observer', function() {
         it('Single event', function() {
             var o = new Bricks.Observer();

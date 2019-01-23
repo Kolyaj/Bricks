@@ -1,5 +1,5 @@
 (function() {
-    //#require Bricks.Widget
+    //#imports
     describe('Bricks.Widget', function() {
         var Widget = Bricks.Widget.inherit({
             _initComponent: function() {

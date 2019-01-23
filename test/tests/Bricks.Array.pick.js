@@ -1,5 +1,5 @@
 (function() {
-    //#require Bricks.Array.pick
+    //#imports
     describe('Bricks.Array.pick', function() {
         it('pick element', function() {
             assert.equal(Bricks.Array.pick([2, 2, 2, 2, 2]), 2);

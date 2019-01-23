@@ -1,5 +1,5 @@
 (function() {
-    //#require Bricks.DOM.classNameExists
+    //#imports
     describe('Bricks.DOM.classNameExists', function() {
         it('single class of div element', function() {
             var container = document.createElement('div');

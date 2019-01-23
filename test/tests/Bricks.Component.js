@@ -1,5 +1,5 @@
 (function() {
-    //#require Bricks.Component
+    //#imports
     describe('Bricks.Component', function() {
         it('Passing config', function() {
             var c = new Bricks.Component({

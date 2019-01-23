@@ -1,5 +1,5 @@
 (function() {
-    //#require Bricks.Array.include
+    //#imports
     describe('Bricks.Array.include', function() {
         it('search one element in array', function() {
             assert.ok(Bricks.Array.include([1, 2, 3], 2));

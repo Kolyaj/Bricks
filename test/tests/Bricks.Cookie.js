@@ -1,8 +1,5 @@
 (function() {
-    //#require Bricks.Cookie.createCookie
-    //#require Bricks.Cookie.readCookie
-    //#require Bricks.Cookie.eraseCookie
-
+    //#imports
     describe('Bricks.Cookie', function() {
         it('Create session cookie', function() {
             Bricks.Cookie.createCookie('foo', 'bar');

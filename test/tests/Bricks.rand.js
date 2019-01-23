@@ -1,5 +1,5 @@
 (function() {
-    //#require Bricks.rand
+    //#imports
     describe('Bricks.rand', function() {
         it('distribution must be uniform', function() {
             var res = [0, 0, 0, 0];

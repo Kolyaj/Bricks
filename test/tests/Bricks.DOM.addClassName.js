@@ -1,5 +1,5 @@
 (function() {
-    //#require Bricks.DOM.addClassName
+    //#imports
     describe('Bricks.DOM.addClassName', function() {
         it('add class name to div element', function() {
             var div = document.createElement('div');

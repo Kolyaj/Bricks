@@ -49,6 +49,7 @@
             assert.ok(callback.calledOnce);
 
             c.resume();
+            c.resume();
             o._fireEvent('action1');
             o._fireEvent('action2');
             assert.ok(callback.calledThrice);

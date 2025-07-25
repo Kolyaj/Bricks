@@ -31,5 +31,14 @@
             assert.equal(el.offsetHeight, 0);
             document.body.removeChild(el);
         });
+        it('--height: 100px; height: var(--height)', function() {
+            var el = document.createElement('div');
+            Bricks.DOM.setStyleProperty(el, '--height', '100px');
+            Bricks.DOM.setStyleProperty(el, 'height', 'var(--height)');
+            document.body.appendChild(el);
+            assert.equal(el.offsetHeight, 100);
+            document.body.removeChild(el);
+
+        });
     });
 })();

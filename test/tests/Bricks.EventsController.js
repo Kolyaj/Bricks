@@ -67,7 +67,7 @@
         });
 
         it('Custom event type', function() {
-            var EventType = Bricks.Component.inherit({
+            var EventType = Bricks.inherit(Bricks.Component, {
                 constructor: function(el) {
                     EventType.superclass.constructor.apply(this);
                     this._on(el, 'action', this._onAction);

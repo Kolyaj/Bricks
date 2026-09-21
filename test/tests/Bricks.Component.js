@@ -9,7 +9,7 @@
         });
 
         it('Prototype properties', function() {
-            var C = Bricks.Component.inherit({
+            var C = Bricks.inherit(Bricks.Component, {
                 a: 5,
                 b: 6
             });
@@ -21,7 +21,7 @@
         it('Method listeners', function() {
             var c1 = new Bricks.Component();
             var foo;
-            var C2 = Bricks.Component.inherit({
+            var C2 = Bricks.inherit(Bricks.Component, {
                 a: 5,
 
                 b: 6,

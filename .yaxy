@@ -1,5 +1,5 @@
 [Bricks]
-/^http://bricks.tests/tests/(.*)/ => bin: dresscodejs ~/test/tests/$1
+/^http://bricks.tests/tests/(.*)/ => bin: dresscodejs -i ~/test/tests/$1 -d
     $SetResponseHeader Content-Type: application/javascript; charset=UTF-8
 bricks.tests/external/ => file://~/test/external/
 bricks.tests/ => file://~/test/

@@ -1,0 +1,8 @@
+- [ ] 20260921-1 Частичное покрытие тестами: без тестов Date, Rnd, String, Number, Sound, QueryString, Remote, Request, XHR, Function — добавить тесты, в первую очередь DOM.js (573 строк, недавняя фиксация CSS-переменных — всего 4 теста)
+- [ ] 20260921-2 Баг: `Bricks.Date.getDayOfYear` вызывает `this.getDate()` (this = Bricks.Date), а не `date.getDate()` — lib/Bricks/Date.js — взорвётся при первом вызове, модуль без тестов
+- [ ] 20260921-3 `Bricks.JSON.parse` фолбэк `new Function('return ' + json)()` — eval ответа сервера (code injection) + `window` при загрузке — lib/Bricks/JSON.js
+- [ ] 20260921-4 `Bricks.String.compile`: сгенерированный код использует `arguments.callee.escapeHTML` — throw в strict-бандле — lib/Bricks/String.js
+- [ ] 20260921-5 `Bricks.Function.throttle`: `arguments.callee` в IIFE — throw в strict-бандле — lib/Bricks/Function.js
+- [ ] 20260921-6 `Bricks.Cookie.readCookie` опирается на `RegExp.$1` (состояние последнего match) — хрупкое implicit-global — lib/Bricks/Cookie.js
+- [ ] 20260921-7 Архитектура: DOM-seam — явный параметр эталона в `DOM.normalizeCSSProperty` (сейчас без `el` имплицитно детектит фичи через `document.documentElement.style` — скрытая browser-зависимость); интерфейс вызывающих не меняется, ядро становится тестируемым в Node — lib/Bricks/DOM.js, StringWidget._setStyle
+- [ ] 20260921-8 Архитектура: Node-тестовый harness — второй адаптер (vm-контекст, `Bricks` pre-declared) рядом с browser-адаптером Yaxy для чистых модулей (String/Number/Date/Rnd/Array/QueryString/Function); Sound.js нужен document-stub; даёт CI

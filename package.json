@@ -10,5 +10,8 @@
     "repository": {
         "type": "git",
         "url": "git://github.com/Kolyaj/Bricks.git"
+    },
+    "devDependencies": {
+        "dresscodejs": "^2.0.8"
     }
 }

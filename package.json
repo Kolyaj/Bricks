@@ -11,7 +11,11 @@
         "type": "git",
         "url": "git://github.com/Kolyaj/Bricks.git"
     },
+    "scripts": {
+        "test": "node test/node/run.js"
+    },
     "devDependencies": {
-        "dresscodejs": "^2.0.8"
+        "dresscodejs": "^2.0.8",
+        "mocha": "^11.8.0"
     }
 }

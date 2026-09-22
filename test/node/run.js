@@ -14,9 +14,8 @@
 // тело функций, сгенерированных через new Function (напр. результат
 // Bricks.String.compile), non-strict в обоих проходах.
 //
-// Known-red гейт: тесты известных багов несут тег [bug <todo-id>] в заголовке it;
-// падение тегированного тега из реестра known-bugs.js не роняет exit-code,
-// остальные падения роняют.
+// Любое падение роняет exit-code: known-red-механизма нет — баги в lib
+// исправляются вместе с созданием тестов (решение 2026-09).
 //
 // Использование:
 //   npm test                            — весь сьюит, build-флаг lang_ru (дефолт)
@@ -28,7 +27,6 @@ var Mocha = require('mocha');
 var {DressCode} = require('dresscodejs');
 
 var builtins = require('./builtins');
-var knownBugs = require('./known-bugs');
 var BricksTest = require('../profile');
 
 var TESTS_DIR = path.join(__dirname, '..', 'tests');
@@ -44,10 +42,6 @@ var INJECTIONS = [
     'BricksTest', 'window', 'document', 'location', 'ActiveXObject',
     'setTimeout', 'clearTimeout', 'describe', 'it', 'assert'
 ];
-
-// Тег известного бага в заголовке it: [bug <todo-id>].
-var BUG_TAG = /\[bug\s+([\w-]+)\]/;
-
 
 // ---------- build-флаги (dresscodejs --set) ----------
 
@@ -136,17 +130,12 @@ var runPass = function(label, strict) {
     });
 
     return new Promise((resolve) => {
-        var failures = [];
         var runner = mocha.run((failCount) => {
             resolve({
                 label: label,
                 failCount: failCount,
-                failures: failures,
                 stats: runner.stats
             });
-        });
-        runner.on('fail', (test) => {
-            failures.push(test);
         });
     });
 };
@@ -176,32 +165,14 @@ var main = async function() {
         await runPass('strict', true)
     ];
 
-    // Known-red гейт.
-    var known = 0;
-    var unknown = 0;
-    passes.forEach((pass) => {
-        pass.failures.forEach((test) => {
-            var match = BUG_TAG.exec(test.fullTitle());
-            if (match && Object.prototype.hasOwnProperty.call(knownBugs, match[1])) {
-                known++;
-                console.log(`  known-bug ${match[1]}: ${test.fullTitle()}`);
-            } else {
-                unknown++;
-            }
-        });
-        // Страховка от рассинхрона события 'fail': неучтённые падения — unknown.
-        unknown += Math.max(0, pass.failCount - pass.failures.length);
-    });
-
+    var totalFailed = 0;
     passes.forEach((pass) => {
         console.log(`\nПроход [${pass.label}]: ${pass.stats.tests} тестов, ${pass.stats.passes} прошло, ${pass.failCount} упало.`);
+        totalFailed += pass.failCount;
     });
 
-    if (known) {
-        console.log(`\nKnown-red (из known-bugs.js, не влияют на exit-code): ${known}`);
-    }
-    if (unknown) {
-        console.log(`\nFAIL: ${unknown} падений вне known-bugs реестра.`);
+    if (totalFailed) {
+        console.log(`\nFAIL: ${totalFailed} падений.`);
         process.exitCode = 1;
     } else {
         console.log('\nOK.');

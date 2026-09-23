@@ -47,5 +47,30 @@
             c1._fireEvent('event2');
             assert.equal(foo, 5);
         });
+
+        it('destroy: снимает все _on-обработчики и посылает событие destroy', function() {
+            var c = new Bricks.Component();
+            var destroyed = false;
+            c.addEventListener('destroy', function() {
+                destroyed = true;
+            });
+            var el = {
+                addEventListener: function(name, fn) {
+                    this._handler = fn;
+                },
+                removeEventListener: function() {
+                    this._handler = null;
+                }
+            };
+            var onCalls = 0;
+            c._on(el, 'x', function() {
+                onCalls++;
+            });
+            assert.ok(el._handler);
+            c.destroy();
+            assert.ok(destroyed);
+            assert.equal(el._handler, null);
+            assert.equal(onCalls, 0);
+        });
     });
 })();

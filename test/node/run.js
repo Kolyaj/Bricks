@@ -9,8 +9,11 @@
 // Free-переменные бандла резолвятся в параметры; параметр window
 // изолирует тест-файлы друг от друга.
 //
-// Весь сьюит прогоняется дважды: обычный (sloppy) проход, затем стрик-проход —
-// харнесс добавляет директиву 'use strict' в начало тела фабрики. По спецификации
+// Среда запуска = build-флаг языка × стрик-контекст (ADR 0003). Языковые
+// ветки lib (Number.pluralIndex: `//#if lang_ru` / `//#if lang_en`) проверяются
+// обоими build-флагами: сьюит компилируется дважды (lang_ru и lang_en) и
+// прогоняется в каждом языке дважды — обычный (sloppy) проход, затем
+// стрик-проход (директива 'use strict' в начале тела фабрики). По спецификации
 // тело функций, сгенерированных через new Function (напр. результат
 // Bricks.String.compile), non-strict в обоих проходах.
 //
@@ -18,8 +21,8 @@
 // исправляются вместе с созданием тестов (решение 2026-09).
 //
 // Использование:
-//   npm test                            — весь сьюит, build-флаг lang_ru (дефолт)
-//   node test/node/run.js --set lang_en — тот же сьюит, build-флаг lang_en
+//   npm test                             — сьюит × {lang_ru, lang_en} × {sloppy, strict}
+//   node test/node/run.js --set lang_en  — сьюит × {lang_en} × {sloppy, strict}
 
 var path = require('path');
 var nodeAssert = require('assert');
@@ -31,10 +34,29 @@ var BricksTest = require('../profile');
 
 var TESTS_DIR = path.join(__dirname, '..', 'tests');
 
-// Файлы, идущие в Node-сьюит. Батчи:
+// Файлы, идущие в Node-сьюит. Батчи (ADR 0003):
 //   0 (todo 20260921-8): spike — Bricks.rand.
+//   1 (todo 20260921-9): чистые модули + перенос существующих браузерных тестов.
 var MANIFEST = [
-    'Bricks.rand.js'
+    // index: mixin, create/inherit, getPrototypeChain(Values), range, rand, isArray-алиас.
+    'Bricks.index.js',
+    // Чистые модули
+    'Bricks.Array.js',
+    'Bricks.String.js',
+    'Bricks.Number.js',
+    'Bricks.Date.js',
+    'Bricks.Rnd.js',
+    'Bricks.QueryString.js',
+    // Window-зависимые (fake-часы)
+    'Bricks.Function.js',
+    // События: host-объект события — вход нормализации, формы — инлайновые литералы
+    // (общие Profiles.event — батч 2 вместе с DOM-дерево)
+    'Bricks.Event.js',
+    'Bricks.Observer.js',
+    'Bricks.EventsController.js',
+    'Bricks.Component.js',
+    // DOM-нормализация: class* через браузерные профили элементов (Profiles.el)
+    'Bricks.DOM.className.js'
 ];
 
 // Стандартный список инъекций (ADR 0003): имена параметров, в порядке.
@@ -55,36 +77,35 @@ for (var i = 0; i < argv.length; i++) {
     }
     setFlags[argv[++i]] = true;
 }
-if (!usageError) {
-    // lang_ru/lang_en взаимоисключающие: при обоих включённых в Number.js
-    // вторая ветка молча перебивает первую, и поведение неоднозначно.
-    var langFlags = Object.keys(setFlags).filter((k) => k.indexOf('lang_') === 0);
-    if (langFlags.length > 1) {
-        usageError = `Lang-флаги взаимоисключающие: ${langFlags.join(', ')}. Прогоните сьюит дважды.`;
-    }
+
+// Языковые build-флаги: по умолчанию прогоняем оба (lang_ru + lang_en) —
+// языковые ветки lib (Number.pluralIndex) различаются по флагу, и один
+// флаг покрывает только одну ветку. Явный --set lang_* сужает прогон.
+var langs = Object.keys(setFlags).filter((k) => k.indexOf('lang_') === 0);
+if (!langs.length) {
+    langs = ['lang_ru', 'lang_en'];
 }
 
-// Контекст компиляции. debug (аналог CLI -d) всегда включён: приватные
-// имена не обфусцируются. Без lang-флага Number.pluralIndex не получает
-// index, и plural вернёт undefined — поэтому дефолт lang_ru, а явный
-// --set его заменяет.
-var context = {debug: true, lang_ru: true};
-Object.keys(setFlags).forEach((k) => {
-    if (k.indexOf('lang_') === 0) {
-        Object.keys(context).forEach((existing) => {
-            if (existing.indexOf('lang_') === 0 && existing !== k) {
-                delete context[existing];
-            }
-        });
-    }
-    context[k] = true;
-});
+// Контекст компиляции для одного языка. debug (аналог CLI -d) всегда
+// включён: приватные имена не обфусцируются. Без lang-флага
+// Number.pluralIndex не получает index, и plural вернёт undefined —
+// каждый прогон имеет ровно один lang-флаг.
+var makeContext = function(lang) {
+    var ctx = {debug: true};
+    Object.keys(setFlags).forEach((k) => {
+        if (k.indexOf('lang_') !== 0) {
+            ctx[k] = true;
+        }
+    });
+    ctx[lang] = true;
+    return ctx;
+};
 
 
 // ---------- один проход сьюита ----------
 
-var runPass = function(label, strict) {
-    console.log(`\n=== проход: ${label} ===`);
+var runPass = function(lang, label, strict) {
+    console.log(`\n=== ${lang} / ${label} ===`);
 
     var mocha = new Mocha();
 
@@ -107,7 +128,7 @@ var runPass = function(label, strict) {
     ];
 
     MANIFEST.forEach((name) => {
-        var code = (strict ? "'use strict';\n" : '') + codeByFile[name];
+        var code = (strict ? "'use strict';\n" : '') + codeByFile[name][lang];
         var factory;
         try {
             factory = new Function(...INJECTIONS, code);
@@ -132,7 +153,7 @@ var runPass = function(label, strict) {
     return new Promise((resolve) => {
         var runner = mocha.run((failCount) => {
             resolve({
-                label: label,
+                label: `${lang} / ${label}`,
                 failCount: failCount,
                 stats: runner.stats
             });
@@ -140,7 +161,7 @@ var runPass = function(label, strict) {
     });
 };
 
-// Бандлы, скомпилированные для обоих проходов.
+// Бандлы, скомпилированные для каждого языка: codeByFile[name][lang].
 var codeByFile = Object.create(null);
 
 
@@ -148,22 +169,32 @@ var codeByFile = Object.create(null);
 
 var main = async function() {
     var dresscode = new DressCode(true, true);
+    MANIFEST.forEach((name) => {
+        codeByFile[name] = Object.create(null);
+    });
     await Promise.resolve().then(() => {
-        return MANIFEST.reduce((chain, name) => {
-            return chain
-                .then(() => dresscode.compile(path.join(TESTS_DIR, name), context, [], []))
-                .then((code) => {
-                    codeByFile[name] = code;
-                });
+        return langs.reduce((chain, lang) => {
+            return chain.then(() => {
+                return MANIFEST.reduce((inner, name) => {
+                    return inner
+                        .then(() => dresscode.compile(path.join(TESTS_DIR, name), makeContext(lang), [], []))
+                        .then((code) => {
+                            codeByFile[name][lang] = code;
+                        });
+                }, Promise.resolve());
+            });
         }, Promise.resolve());
     });
 
-    console.log(`\nBuild-флаги: ${Object.keys(context).join(', ')}; файлов в сьюите: ${MANIFEST.length}`);
+    console.log(`\nBuild-флаги: ${langs.join(' + ')}; файлов в сьюите: ${MANIFEST.length}; прогонов: ${langs.length * 2}`);
 
-    var passes = [
-        await runPass('sloppy', false),
-        await runPass('strict', true)
-    ];
+    var passes = [];
+    for (var i = 0; i < langs.length; i++) {
+        passes.push(
+            await runPass(langs[i], 'sloppy', false),
+            await runPass(langs[i], 'strict', true)
+        );
+    }
 
     var totalFailed = 0;
     passes.forEach((pass) => {

@@ -4,50 +4,31 @@
     <meta charset="utf-8">
     <title>Bricks tests</title>
     <link href="/external/mocha.css" rel="stylesheet" type="text/css">
-    <style type="text/css">
-        .height_100 {
-            height: 100px;
-            display: block;
-        }
-        .width_100 {
-            width: 100px;
-            display: block;
-        }
-    </style>
 </head>
 <body>
 <div id="mocha"></div>
 
-<script src="/external/jquery.min.js"></script>
+<!--
+    Остаточный браузерный минимум (ADR 0003): то, что нельзя mock-ать.
+    Всё остальное живёт в Node-харнессе (npm test, test/node/run.js).
+    Осталось в батче 1:
+      * Bricks.Cookie — document.cookie-хранилище — механизм, не вход (todo 20260921-11);
+      * Bricks.DOM.setStyleProperty — layout/feature-детекция через реальный
+        document.documentElement (останется, пока не решим вопрос нормализатора стилей).
+-->
 <script src="/external/assert.js"></script>
 <script src="/external/mocha.js"></script>
-<script src="/external/sinon-7.0.0.js"></script>
 
 <script>mocha.setup('bdd')</script>
 
 <script src="/profile/index.js"></script>
 
-<script src="/tests/Bricks.create.js"></script>
-<script src="/tests/Bricks.inherit.js"></script>
-<script src="/tests/Bricks.EventsController.js"></script>
 <script src="/tests/Bricks.DOM.setStyleProperty.js"></script>
-<script src="/tests/Bricks.DOM.classNameExists.js"></script>
-<script src="/tests/Bricks.DOM.addClassName.js"></script>
-<script src="/tests/Bricks.DOM.removeClassName.js"></script>
 <script src="/tests/Bricks.Cookie.js"></script>
-<script src="/tests/Bricks.Observer.js"></script>
-<script src="/tests/Bricks.Component.js"></script>
-<script src="/tests/Bricks.Array.last.js"></script>
-<script src="/tests/Bricks.Array.include.js"></script>
-<script src="/tests/Bricks.Array.shuffle.js"></script>
-<script src="/tests/Bricks.Array.pick.js"></script>
-<script src="/tests/Bricks.Array.flatten.js"></script>
 
 <script>
     mocha.checkLeaks();
-    mocha.globals(['jQuery']);
     mocha.run();
 </script>
 </body>
 </html>
-

@@ -37,6 +37,8 @@ var TESTS_DIR = path.join(__dirname, '..', 'tests');
 // Файлы, идущие в Node-сьюит. Батчи (ADR 0003):
 //   0 (todo 20260921-8): spike — Bricks.rand.
 //   1 (todo 20260921-9): чистые модули + перенос существующих браузерных тестов.
+//   2 (todo 20260921-10): нормализаторы через браузерные профили
+//     (Profiles.el/style/doc/event/xhr) + conformance-meta-тесты профилей.
 var MANIFEST = [
     // index: mixin, create/inherit, getPrototypeChain(Values), range, rand, isArray-алиас.
     'Bricks.index.js',
@@ -50,13 +52,21 @@ var MANIFEST = [
     // Window-зависимые (fake-часы)
     'Bricks.Function.js',
     // События: host-объект события — вход нормализации, формы — инлайновые литералы
-    // (общие Profiles.event — батч 2 вместе с DOM-дерево)
+    // (общие Profiles.event — батч 2)
     'Bricks.Event.js',
     'Bricks.Observer.js',
     'Bricks.EventsController.js',
     'Bricks.Component.js',
     // DOM-нормализация: class* через браузерные профили элементов (Profiles.el)
-    'Bricks.DOM.className.js'
+    'Bricks.DOM.className.js',
+    // Батч 2: профили doc/el/style/event/xhr
+    'Bricks.DOM.leaves.js',
+    'Bricks.DOM.css.js',
+    'Bricks.Sound.js',
+    'Bricks.Remote.js',
+    'Bricks.DragController.js',
+    // Conformance-проверки самих профилей (без вызовов lib)
+    'Profiles.js'
 ];
 
 // Стандартный список инъекций (ADR 0003): имена параметров, в порядке.
@@ -110,7 +120,7 @@ var runPass = function(lang, label, strict) {
     var mocha = new Mocha();
 
     // Чистый контекст BDD-интерфейса; изоляция между проходами:
-    // новый mocha, новые часы, новые инертные моки.
+    // новый mocha, новые часы, новые modern-профили.
     var suiteCtx = {};
     mocha.suite.emit('pre-require', suiteCtx, label, mocha);
 

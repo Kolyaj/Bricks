@@ -1,14 +1,16 @@
 // Node-встроенные сущности тестового харнесса (ADR 0003).
 //
 // createClock() — детерминированные fake-часы: в сьюите нет реального
-// времени, тест продвигает время вручную (clock.tick(ms)), sinon в Node не нужен.
-// Bricks.Function.* ходит и в window.setTimeout (defer),
-// и в голой setTimeout (debounce/throttle) — обе точки ведут на одни часы.
+// времени, тест продвигает время вручную (clock.tick(ms)). sinon в Node не нужен.
 //
-// createBrowserGlobals(clock) — инертные заглушки браузерных глобалов:
-// «современный браузер без фич», достаточно для загрузки кода и современных
-// веток feature-проверок. Настоящие интерфейсы браузеров задают профили
-// (test/profile, батч 2), которые подменяют заглушки по одному профилю.
+// createBrowserGlobals(clock) — базовая среда сьюита: window/document —
+// modern-профили (test/profile). Тесты, которым нужна другая форма
+// host-объекта, получают её от фабрик Profiles.* напрямую (каждая фабрика
+// возвращает новый объект). Тесты мутируют только те профили, которые сами
+// создали. Lib-файлы на require не ссылаются: lib самодостаточен, тестовые
+// файлы используют только инъекты.
+
+var BricksTest = require('../profile');
 
 var createClock = function() {
     var active = Object.create(null);
@@ -66,9 +68,12 @@ var createBrowserGlobals = function(clock) {
     return {
         window: {
             setTimeout: clock.setTimeout,
-            clearTimeout: clock.clearTimeout
+            clearTimeout: clock.clearTimeout,
+            // Профиль XHR-конструктора: ветку new XMLHttpRequest() Remote
+            // добирает с globalThis (XMLHttpRequest не в списке инъекций).
+            XMLHttpRequest: BricksTest.Profiles.xhr
         },
-        document: {},
+        document: BricksTest.Profiles.doc.modern(),
         location: {},
         ActiveXObject: undefined
     };

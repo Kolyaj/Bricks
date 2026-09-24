@@ -29,7 +29,7 @@
                 assert.equal(Bricks.Event.getTarget({}), undefined);
             });
 
-            // getTarget(evt, selector) и getPos — DOM-дерево: батч 2.
+            // getTarget(evt, selector) и getPos — DOM-дерево: батч 3.
         });
 
         describe('stop', function() {

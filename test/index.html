@@ -9,12 +9,16 @@
 <div id="mocha"></div>
 
 <!--
-    Остаточный браузерный минимум (ADR 0003): то, что нельзя mock-ать.
-    Всё остальное живёт в Node-харнессе (npm test, test/node/run.js).
-    Осталось в батче 1:
-      * Bricks.Cookie — document.cookie-хранилище — механизм, не вход (todo 20260921-11);
-      * Bricks.DOM.setStyleProperty — layout/feature-детекция через реальный
-        document.documentElement (останется, пока не решим вопрос нормализатора стилей).
+    Остаточный браузерный минимум (ADR 0003): то, что нельзя mock-ать —
+    host-API как механизм, а не вход нормализации. Всё остальное живёт в
+    Node-харнессе (npm test, test/node/run.js). Батч 3 (2026-09) завершил
+    перенос, итоговый минимум:
+      * Bricks.Cookie — document.cookie-хранилище;
+      * DOM-дерево Bricks.DOM: getEl/getEls/createSelectorFilter/remove/
+        createFragment/setStyle/on/un/unAll/initDrag — реальное дерево,
+        диспетчеризация событий, innerHTML-фрагменты;
+      * Bricks.DOM.setStyleProperty — layout-замеры через реальный document;
+      * Bricks.Sound._createAudioEl — innerHTML-парсер.
 -->
 <script src="/external/assert.js"></script>
 <script src="/external/mocha.js"></script>
@@ -25,6 +29,8 @@
 
 <script src="/tests/Bricks.DOM.setStyleProperty.js"></script>
 <script src="/tests/Bricks.Cookie.js"></script>
+<script src="/tests/Bricks.DOM.tree.js"></script>
+<script src="/tests/Bricks.Sound.dom.js"></script>
 
 <script>
     mocha.checkLeaks();

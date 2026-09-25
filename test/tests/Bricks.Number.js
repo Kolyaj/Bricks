@@ -71,5 +71,19 @@
             });
         });
         //#endif
+
+        describe('pad2', function() {
+            it('< 10 — ведущий ноль', function() {
+                assert.equal(Bricks.Number.pad2(0), '00');
+                assert.equal(Bricks.Number.pad2(5), '05');
+                assert.equal(Bricks.Number.pad2(9), '09');
+            });
+            it('>= 10 — без дополнения', function() {
+                assert.equal(Bricks.Number.pad2(10), '10');
+                assert.equal(Bricks.Number.pad2(59), '59');
+                assert.equal(Bricks.Number.pad2(99), '99');
+                assert.equal(Bricks.Number.pad2(100), '100');
+            });
+        });
     });
 })();

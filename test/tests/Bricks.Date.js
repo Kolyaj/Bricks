@@ -170,9 +170,36 @@
             it('двойной эскейп \\\\ — литеральный бэкслэш', function() {
                 assert.equal(Bricks.Date.format(d, 'Y\\\\'), '2024\\');
             });
-            it('кэш formatter: одна строка формата, разные даты', function() {
+            it('одна строка формата, разные даты', function() {
                 assert.equal(Bricks.Date.format(d, 'Y-m-d'), '2024-05-15');
                 assert.equal(Bricks.Date.format(new Date(1999, 11, 31, 23, 59, 59), 'Y-m-d'), '1999-12-31');
+            });
+            it('line-терминаторы в строке формата сохраняются', function() {
+                assert.equal(Bricks.Date.format(d, 'Y\nm'), '2024\n05');
+                assert.equal(Bricks.Date.frmt(d, 'Y\nm'), '2024\n05');
+            });
+        });
+
+        describe('frmt', function() {
+            var d = new Date(2024, 4, 15, 10, 30, 45);
+
+            it('Y-m-d H:i:s', function() {
+                assert.equal(Bricks.Date.frmt(d, 'Y-m-d H:i:s'), '2024-05-15 10:30:45');
+            });
+            it('совпадает с format для общих спецификаторов', function() {
+                assert.equal(Bricks.Date.frmt(d, 'Y-m-d H:i:s'), Bricks.Date.format(d, 'Y-m-d H:i:s'));
+            });
+            it('ведущие нули', function() {
+                var single = new Date(2024, 0, 5, 1, 2, 3);
+                assert.equal(Bricks.Date.frmt(single, 'Y-m-d H:i:s'), '2024-01-05 01:02:03');
+            });
+            it('не-спецификаторы выводятся как есть', function() {
+                assert.equal(Bricks.Date.frmt(d, 'Y/m/d'), '2024/05/15');
+                assert.equal(Bricks.Date.frmt(d, 'Y q m'), '2024 q 05');
+            });
+            it('остальные спецификаторы format не распознаются', function() {
+                assert.equal(Bricks.Date.frmt(d, 'F D j G'), 'F D j G');
+                assert.equal(Bricks.Date.format(d, 'F D j G'), 'May Wed 15 10');
             });
         });
     });

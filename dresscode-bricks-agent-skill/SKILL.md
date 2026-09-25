@@ -67,8 +67,8 @@ var thing = new Thing({name: 'foo'}); // config-хэш → свойства эк
 | `Bricks.DOM` | `getEl`/`getEls` (id, селектор или узел); className: `add`/`remove`/`set`/`toggle`/`get`, `classNameExists`; `setStyle`; `on`/`un`/`unAll`; `initDrag`; `remove`; `isAncestor`; `getParent`; размеры: `getPos`/`getSize`/`getRealSize`/`getViewportSize`/`getDocumentSize`/`getDocumentScroll`; `createFragment`, `createSelectorFilter`; `normalizeCSSProperty`/`normalizeCSSValue` — vendor-префиксы, `cssFloat`/`styleFloat`, `filter:Alpha`: единое поведение на всех браузерах. |
 | `Bricks.Event` | Нормализация событий: `getTarget`, `getPos`, `stop`, `isLeftClick` (одно поведение, включая старые IE). |
 | `Bricks.String` | `trim`, `format(str, …args)`, `compile(str)` (шаблон `<%= %>` → функция), `startsWith`/`endsWith`, `escapeHTML`/`stripTags`, `truncate`/`truncateLeft`/`truncateRight`, `times`, `camelize`/`uncamelize`. |
-| `Bricks.Number` | `plural(num, 'форма\|форма\|форма', hideNumber)`, `pluralIndex(num)` — **зависят от lang-флага** (см. Нюансы). |
-| `Bricks.Date` | `format(date, fmt)`, `clone`, `clearTime`, `getDayOfYear`, `getWeekOfYear`, `getDaysInMonth`, `isLeapYear`, `getGMTOffset`. |
+| `Bricks.Number` | `plural(num, 'форма\|форма\|форма', hideNumber)`, `pluralIndex(num)` — **зависят от lang-флага** (см. Нюансы); `pad2(n)` — ведущий ноль для < 10. |
+| `Bricks.Date` | `format(date, fmt)`, `frmt(date, fmt)` — упрощённый формат (только спецификаторы `d H i m s Y`), `clone`, `clearTime`, `getDayOfYear`, `getWeekOfYear`, `getDaysInMonth`, `isLeapYear`, `getGMTOffset`. |
 | `Bricks.Array` | `last`, `isArray`, `flatten(input, depth)`, `include`, `pick`, `shuffle` — последние два на `Math.random` (недетерминированы). |
 | `Bricks.Cookie` | `readCookie(name)`, `createCookie(name, value, days, domain)`, `eraseCookie(name)` — только `document.cookie`. |
 | `Bricks.QueryString` | `parse(query)`, `stringify(object)`. |
